@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Ass1.Models;
@@ -170,6 +171,12 @@ namespace Ass1.Controllers
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
+                    // Add user to userRole
+                    ApplicationDbContext context = ApplicationDbContext.Create();
+                    var um = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(context));
+                    IdentityResult ir = um.AddToRole(user.Id, "userRole");
+                    if (ir.Succeeded == false)
+                        AddErrors(ir);
                     return RedirectToAction("Index", "Home");
                 }
                 AddErrors(result);

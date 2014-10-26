@@ -22,17 +22,30 @@ namespace Ass1.Migrations
             var rm = new RoleManager<IdentityRole>
                 (new RoleStore<IdentityRole>(context));
             ir = rm.Create(new IdentityRole("canEdit"));
+            rm.Create(new IdentityRole("userRole"));
+
             var um = new UserManager<ApplicationUser>(
                 new UserStore<ApplicationUser>(context));
             var user = new ApplicationUser()
             {
-                UserName = "user1@contoso.com",
+                UserName = "admin@admin.com",
             };
             ir = um.Create(user, "Pa$$word1");
             if (ir.Succeeded == false)
                 return ir.Succeeded;
             ir = um.AddToRole(user.Id, "canEdit");
-            return ir.Succeeded;
+            if (ir.Succeeded == false)
+                return ir.Succeeded;
+
+            user = new ApplicationUser()
+            {
+                UserName = "user@user.com",
+            };
+            ir = um.Create(user, "Pa$$word1");
+            if (ir.Succeeded == false)
+                return ir.Succeeded;
+            ir = um.AddToRole(user.Id, "userRole");
+           return ir.Succeeded;
         }
 
         protected override void Seed(Ass1.Models.ApplicationDbContext context)
