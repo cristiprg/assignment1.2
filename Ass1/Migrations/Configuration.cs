@@ -1,15 +1,38 @@
+using Ass1.Models;
+
 namespace Ass1.Migrations
 {
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Linq;
+    using Microsoft.AspNet.Identity;
+    using Microsoft.AspNet.Identity.EntityFramework;
 
     internal sealed class Configuration : DbMigrationsConfiguration<Ass1.Models.ApplicationDbContext>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
+        }
+
+        bool AddUserAndRole(ApplicationDbContext context)
+        {
+            IdentityResult ir;
+            var rm = new RoleManager<IdentityRole>
+                (new RoleStore<IdentityRole>(context));
+            ir = rm.Create(new IdentityRole("canEdit"));
+            var um = new UserManager<ApplicationUser>(
+                new UserStore<ApplicationUser>(context));
+            var user = new ApplicationUser()
+            {
+                UserName = "user1@contoso.com",
+            };
+            ir = um.Create(user, "Pa$$word1");
+            if (ir.Succeeded == false)
+                return ir.Succeeded;
+            ir = um.AddToRole(user.Id, "canEdit");
+            return ir.Succeeded;
         }
 
         protected override void Seed(Ass1.Models.ApplicationDbContext context)
@@ -26,6 +49,7 @@ namespace Ass1.Migrations
             //      new Person { FullName = "Rowan Miller" }
             //    );
             //
+            AddUserAndRole(context);
         }
     }
 }
