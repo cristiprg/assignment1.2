@@ -1,6 +1,10 @@
-﻿using System.Data.Entity;
+﻿using System;
+using System.Data.Entity;
+using System.IO;
+using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Xml;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 
@@ -19,7 +23,7 @@ namespace Ass1.Models
             var userIdentity = await manager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
             // Add custom user claims here
             return userIdentity;
-        }
+        }      
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
@@ -36,4 +40,28 @@ namespace Ass1.Models
 
         //public System.Data.Entity.DbSet<Ass1.Models.ApplicationUser> ApplicationUsers { get; set; }
     }
+}
+
+namespace Ass1
+{
+    static class TimeHelper
+    {
+        public static string getTime(float lat = 0, float lon = 0)
+        {
+            string url = "http://www.earthtools.org/timezone/" + lat + "/" + lon;
+
+            // http://forums.asp.net/t/1372395.aspx?Get+and+Post+data+using+Web+Service
+
+            XmlDocument responseXML = new XmlDocument();
+            WebRequest request = WebRequest.Create(url);
+            using (WebResponse response = request.GetResponse())
+            {
+                StreamReader responseStream = new StreamReader(response.GetResponseStream());
+                responseXML.LoadXml(responseStream.ReadToEnd());
+                return responseXML.GetElementsByTagName("localtime")[0].InnerText;
+            }
+
+        }
+    }
+
 }
