@@ -5,7 +5,8 @@
 @if (Request.IsAuthenticated)
 {
     <div class="jumbotron">
-        <h1>Your time is: @ViewBag.Message</h1>
+        <h1>Hello, @ViewBag.Greetings</h1>
+        <h3>Your time is: @ViewBag.Message</h3>
     </div>
 }
 else

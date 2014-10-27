@@ -25,6 +25,9 @@ namespace Ass1.Controllers
                 var currentUser = manager.FindById(User.Identity.GetUserId()); 
 
                 ViewBag.Message = TimeHelper.getTime(currentUser.Latitude, currentUser.Longitude);                
+
+                bool isCanEdit = manager.IsInRole(User.Identity.GetUserId(), "canEdit");
+                ViewBag.Greetings = (isCanEdit == true) ? "Admin" : "Normal user";
             }
 
         return View();
