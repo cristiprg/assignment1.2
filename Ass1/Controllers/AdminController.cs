@@ -16,20 +16,27 @@ namespace Ass1.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        // GET: Admin
-        //[Authorize(Roles = "canEdit")]
-        public ActionResult Index()
+        private bool IsCanEdit()
         {
             if (Request.IsAuthenticated)
             {
                 var um = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db));
                 bool isCanEdit = um.IsInRole(User.Identity.GetUserId(), "canEdit");
 
-                if(isCanEdit)
-                    return View(db.Users.ToList());
+                return isCanEdit;
             }
 
-            return RedirectToAction("Index", "Home");
+            return false;
+        }
+
+        // GET: Admin
+        //[Authorize(Roles = "canEdit")]
+        public ActionResult Index()
+        {
+            if (!IsCanEdit())
+                return RedirectToAction("Index", "Home");
+            
+            return View(db.Users.ToList());                                        
             //return View(db.ApplicationUsers.ToList());            
         }
 
@@ -37,6 +44,9 @@ namespace Ass1.Controllers
         //[Authorize(Roles = "canEdit")]
         public ActionResult Details(string id)
         {
+            if (!IsCanEdit())
+                return RedirectToAction("Index", "Home");
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -54,6 +64,9 @@ namespace Ass1.Controllers
         //[Authorize(Roles = "canEdit")]
         public ActionResult Create()
         {
+            if (!IsCanEdit())
+                return RedirectToAction("Index", "Home");
+
             return View();
         }
 
@@ -65,6 +78,9 @@ namespace Ass1.Controllers
         //[Authorize(Roles = "canEdit")]
         public ActionResult Create([Bind(Include = "Id,Firstname,Lastname,Latitude,Longitude,Email,EmailConfirmed,PasswordHash,SecurityStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEndDateUtc,LockoutEnabled,AccessFailedCount,UserName")] ApplicationUser applicationUser)
         {
+            if (!IsCanEdit())
+                return RedirectToAction("Index", "Home");
+
             if (ModelState.IsValid)
             {
                 db.Users.Add(applicationUser);
@@ -79,6 +95,9 @@ namespace Ass1.Controllers
         //[Authorize(Roles = "canEdit")]
         public ActionResult Edit(string id)
         {
+            if (!IsCanEdit())
+                return RedirectToAction("Index", "Home");
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -99,6 +118,9 @@ namespace Ass1.Controllers
         //[Authorize(Roles = "canEdit")]
         public ActionResult Edit([Bind(Include = "Id,Firstname,Lastname,Latitude,Longitude,Email,EmailConfirmed,PasswordHash,SecurityStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEndDateUtc,LockoutEnabled,AccessFailedCount,UserName")] ApplicationUser applicationUser)
         {
+            if (!IsCanEdit())
+                return RedirectToAction("Index", "Home");
+
             if (ModelState.IsValid)
             {
                 db.Entry(applicationUser).State = EntityState.Modified;
@@ -112,6 +134,9 @@ namespace Ass1.Controllers
         //[Authorize(Roles = "canEdit")]
         public ActionResult Delete(string id)
         {
+            if (!IsCanEdit())
+                return RedirectToAction("Index", "Home");
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -130,6 +155,9 @@ namespace Ass1.Controllers
         //[Authorize(Roles = "canEdit")]
         public ActionResult DeleteConfirmed(string id)
         {
+            if (!IsCanEdit())
+                return RedirectToAction("Index", "Home");
+
             ApplicationUser applicationUser = db.Users.Find(id);
             db.Users.Remove(applicationUser);
             db.SaveChanges();
