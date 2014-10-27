@@ -15,6 +15,7 @@ namespace Ass1.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Admin
+        //[Authorize(Roles = "canEdit")]
         public ActionResult Index()
         {
             //return View(db.ApplicationUsers.ToList());
@@ -22,6 +23,7 @@ namespace Ass1.Controllers
         }
 
         // GET: Admin/Details/5
+        //[Authorize(Roles = "canEdit")]
         public ActionResult Details(string id)
         {
             if (id == null)
@@ -38,6 +40,7 @@ namespace Ass1.Controllers
         }
 
         // GET: Admin/Create
+        //[Authorize(Roles = "canEdit")]
         public ActionResult Create()
         {
             return View();
@@ -48,6 +51,7 @@ namespace Ass1.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        //[Authorize(Roles = "canEdit")]
         public ActionResult Create([Bind(Include = "Id,Firstname,Lastname,Latitude,Longitude,Email,EmailConfirmed,PasswordHash,SecurityStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEndDateUtc,LockoutEnabled,AccessFailedCount,UserName")] ApplicationUser applicationUser)
         {
             if (ModelState.IsValid)
@@ -61,6 +65,7 @@ namespace Ass1.Controllers
         }
 
         // GET: Admin/Edit/5
+        //[Authorize(Roles = "canEdit")]
         public ActionResult Edit(string id)
         {
             if (id == null)
@@ -80,6 +85,7 @@ namespace Ass1.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        //[Authorize(Roles = "canEdit")]
         public ActionResult Edit([Bind(Include = "Id,Firstname,Lastname,Latitude,Longitude,Email,EmailConfirmed,PasswordHash,SecurityStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEndDateUtc,LockoutEnabled,AccessFailedCount,UserName")] ApplicationUser applicationUser)
         {
             if (ModelState.IsValid)
@@ -92,6 +98,7 @@ namespace Ass1.Controllers
         }
 
         // GET: Admin/Delete/5
+        //[Authorize(Roles = "canEdit")]
         public ActionResult Delete(string id)
         {
             if (id == null)
@@ -109,6 +116,7 @@ namespace Ass1.Controllers
         // POST: Admin/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        //[Authorize(Roles = "canEdit")]
         public ActionResult DeleteConfirmed(string id)
         {
             ApplicationUser applicationUser = db.Users.Find(id);
@@ -117,6 +125,7 @@ namespace Ass1.Controllers
             return RedirectToAction("Index");
         }
 
+        //[Authorize(Roles = "canEdit")]
         protected override void Dispose(bool disposing)
         {
             if (disposing)
