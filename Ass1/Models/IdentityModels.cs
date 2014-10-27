@@ -33,5 +33,7 @@ namespace Ass1.Models
         {
             return new ApplicationDbContext();
         }
+
+        //public System.Data.Entity.DbSet<Ass1.Models.ApplicationUser> ApplicationUsers { get; set; }
     }
 }
