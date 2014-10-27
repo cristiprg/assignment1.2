@@ -28,6 +28,8 @@ namespace Ass1.Controllers
 
                 bool isCanEdit = manager.IsInRole(User.Identity.GetUserId(), "canEdit");
                 ViewBag.Greetings = (isCanEdit == true) ? "Admin" : "Normal user";
+                ViewBag.UserType = isCanEdit;
+                ViewBag.CurrentUser = currentUser.Firstname;
             }
 
         return View();
