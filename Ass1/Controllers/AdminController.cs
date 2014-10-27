@@ -7,6 +7,8 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Ass1.Models;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace Ass1.Controllers
 {
@@ -18,8 +20,17 @@ namespace Ass1.Controllers
         //[Authorize(Roles = "canEdit")]
         public ActionResult Index()
         {
-            //return View(db.ApplicationUsers.ToList());
-            return View(db.Users.ToList());
+            if (Request.IsAuthenticated)
+            {
+                var um = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db));
+                bool isCanEdit = um.IsInRole(User.Identity.GetUserId(), "canEdit");
+
+                if(isCanEdit)
+                    return View(db.Users.ToList());
+            }
+
+            return RedirectToAction("Index", "Home");
+            //return View(db.ApplicationUsers.ToList());            
         }
 
         // GET: Admin/Details/5
